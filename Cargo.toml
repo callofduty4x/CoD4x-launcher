@@ -1,0 +1,14 @@
+[workspace]
+members = ["launcher", "mss"]
+resolver = "2"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+debug = false
+lto = true # turn on link-time-optimizations
+strip = true # strip unused symbols
+panic = 'abort' # abort on panic
+opt-level = 's' # optimize for size
+

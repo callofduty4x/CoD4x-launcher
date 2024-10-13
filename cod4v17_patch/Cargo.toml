@@ -1,0 +1,8 @@
+[package]
+name = "cod4v17_patch"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["lib"]
+
