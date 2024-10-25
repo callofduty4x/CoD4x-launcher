@@ -1,0 +1,55 @@
+name: Rust
+
+on:
+  push:
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+      - develop
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install prerequisites
+      run: sudo apt-get install g++-mingw-w64-i686-posix mingw-w64-i686-dev
+
+    - uses: actions/checkout@v4
+    - uses: moonrepo/setup-rust@v1
+      with:
+        targets: 'i686-pc-windows-gnu'
+
+    - name: Patch
+      run: rm -rf cod4v17_patch
+
+    - uses: actions/checkout@v4
+      with:
+        repository: 'callofduty4x/cod4v17-patch'
+        path: 'cod4v17_patch'
+        ssh-key: '${{ secrets.CLIENT_AUTH_DEPLOY_KEY }}'
+
+    - name: Build
+      run: |
+        cargo build --release --features cod4v17_patch --verbose
+
+    - name: Prepare release artifacts
+      run: |
+        ln -s target/i686-pc-windows-gnu/release/launcher.dll .
+        sha1sum launcher.dll > hashes.txt
+        cat hashes.txt
+
+    - name: Publish release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        tag: ${{ github.ref_name }}
+        artifacts: "launcher.dll,hashes.txt"
+        token: ${{ secrets.GITHUB_TOKEN }}
