@@ -7,6 +7,7 @@ pub struct Update {
     pub current: Option<Version>,
     pub upstream: Version,
     pub requires_elevate: bool,
+    pub requires_restart: bool,
 }
 
 pub trait Component: Send + Sync {

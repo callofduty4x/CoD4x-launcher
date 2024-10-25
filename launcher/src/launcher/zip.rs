@@ -37,9 +37,9 @@ pub fn extract_file(
     )?;
 
     if let Some(parent) = destination_filename.parent() {
-        std::fs::create_dir_all(&parent)?;
+        std::fs::create_dir_all(parent)?;
     }
-    let mut outfile = std::fs::File::create(&destination_filename)?;
+    let mut outfile = std::fs::File::create(destination_filename)?;
     std::io::copy(&mut file, &mut outfile)?;
     Ok(())
 }

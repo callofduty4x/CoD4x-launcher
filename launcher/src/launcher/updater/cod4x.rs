@@ -43,6 +43,7 @@ impl CoD4xComponent {
                 current: None,
                 upstream: upstream_version.unwrap_or(Version::new(0, 0, 0)),
                 requires_elevate: false,
+                requires_restart: false,
             })),
             // We got a valid current version, compare with upstream
             Ok(current) => {
@@ -54,6 +55,7 @@ impl CoD4xComponent {
                         current: Some(current),
                         upstream,
                         requires_elevate: false,
+                        requires_restart: false,
                     }))
                 } else {
                     Ok(None)
@@ -76,6 +78,7 @@ impl CoD4xComponent {
                 current: None,
                 upstream: Version::new(1, 0, 0),
                 requires_elevate: false,
+                requires_restart: false,
             }))
         } else {
             Ok(None)

@@ -94,19 +94,38 @@ pub fn run_updater(is_elevated: bool) -> anyhow::Result<()> {
         icons: nwg::MessageIcons::Question,
     };
 
-    if is_elevated || nwg::message(&params) == nwg::MessageChoice::Yes {
-        if needs_elevation {
-            process::restart(process::Privileges::Admin, Some("+set elevated 1"))?;
-            unsafe { ExitThread(0) };
-            return Ok(());
-        }
+    if nwg::message(&params) != nwg::MessageChoice::Yes {
+        return Ok(());
+    }
 
-        gui::run_gui(Arc::new(updates))?;
-        if is_elevated {
-            msg_box::message_box("Update installed, restart the game now.", "CoD4x Updater");
-            unsafe { ExitThread(0) };
-            return Ok(());
-        }
+    if needs_elevation {
+        process::restart(process::Privileges::Admin, Some("+set elevated 1"))?;
+        unsafe { ExitThread(0) };
+        return Ok(());
+    }
+
+    let needs_restart = !is_elevated
+        && updates.iter().any(|(component, _)| {
+            component
+                .iter()
+                .any(|update_artifact| update_artifact.requires_restart)
+        });
+
+    gui::run_gui(Arc::new(updates))?;
+
+    if is_elevated {
+        msg_box::message_box("Update installed, restart the game now.", "CoD4x Updater");
+        unsafe { ExitThread(0) };
+        return Ok(());
+    }
+
+    if needs_restart {
+        msg_box::message_box(
+            "Update installed, the game will restart now.",
+            "CoD4x Updater",
+        );
+        process::restart(process::Privileges::User, None)?;
+        unsafe { ExitThread(0) };
     }
 
     Ok(())
