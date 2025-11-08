@@ -21,7 +21,11 @@ jobs:
 
     steps:
     - name: Install prerequisites
-      run: sudo apt-get install g++-mingw-w64-i686-posix mingw-w64-i686-dev
+      run: |
+        sudo apt-get install g++-mingw-w64-i686-posix mingw-w64-i686-dev
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install nasm:i386
 
     - uses: actions/checkout@v4
     - uses: moonrepo/setup-rust@v1
