@@ -15,14 +15,14 @@ fn get_updates() -> Vec<(Vec<Update>, Box<dyn Component>)> {
     match cod4x::CoD4xComponent::new() {
         Ok(component) => components.push(Box::new(component)),
         Err(e) => msg_box::message_box(
-            format!("Error updating CoD4x:\n{}", e).as_str(),
+            format!("Error updating CoD4x:\n{e}").as_str(),
             "CoD4x Updater",
         ),
     }
     match launcher::LauncherComponent::new() {
         Ok(component) => components.push(Box::new(component)),
         Err(e) => msg_box::message_box(
-            format!("Error updating launcher:\n{}", e).as_str(),
+            format!("Error updating launcher:\n{e}").as_str(),
             "CoD4x Updater",
         ),
     }
@@ -48,7 +48,7 @@ fn build_updates_message(
                 let current_version = update
                     .current
                     .as_ref()
-                    .map_or("unknown".to_string(), |v| format!("{}", v));
+                    .map_or("unknown".to_string(), |v| format!("{v}"));
 
                 component_updates += format!(
                     "\n  - {}: {} => {}",

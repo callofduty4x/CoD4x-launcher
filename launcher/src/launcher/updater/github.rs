@@ -16,10 +16,7 @@ pub struct ReleaseInformation {
 }
 
 pub fn fetch_release_information(repository_path: &str) -> Result<ReleaseInformation, ParseError> {
-    let url = format!(
-        "https://api.github.com/repos/{}/releases/latest",
-        repository_path
-    );
+    let url = format!("https://api.github.com/repos/{repository_path}/releases/latest");
     let response = http::download_str(url.as_str(), Some(Duration::from_secs(3)))
         .map_err(|_| ParseError::FetchError)?;
     let response_json: json::Value =

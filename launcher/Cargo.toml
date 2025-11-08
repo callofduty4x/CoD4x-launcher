@@ -1,13 +1,13 @@
 [package]
 name = "launcher"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 
 [dependencies]
 anyhow = "1.0.86"
 sha1 = "^0.10"
 user32-sys = "0.2.0"
-libloading = "0.8.5"
+libloading = "0.9.0"
 hex = "0.4.3"
 curl = { version = "0.4.46", features = ["static-curl"] }
 nwg = { version = "1.0.13", package = "native-windows-gui" }
@@ -16,7 +16,7 @@ glob = "0.3.1"
 self-replace = "1.4.0"
 semver = "1.0.23"
 regex = "1.10.6"
-zip = { version = "2.2.0", default-features = false, features = ["deflate", "deflate64"] }
+zip = { version = "6.0.0", default-features = false, features = ["deflate", "deflate64"] }
 
 [dependencies.winapi]
 version = "0.3.9"
@@ -47,7 +47,7 @@ default = []
 cod4v17_patch = ["dep:cod4v17_patch"]
 
 [build-dependencies]
-embed-resource = "2.4.3"
+embed-resource = "3.0.6"
 
 [lib]
 crate-type = ["cdylib"]

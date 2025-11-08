@@ -36,12 +36,12 @@ pub fn get_appdata_cod4_path() -> anyhow::Result<std::path::PathBuf> {
     use std::ffi::OsString;
     use std::os::windows::ffi::OsStringExt;
     use std::path::PathBuf;
+    use winapi::shared::minwindef::LPVOID;
+    use winapi::shared::ntdef::LPWSTR;
     use winapi::shared::winerror::SUCCEEDED;
     use winapi::um::combaseapi::CoTaskMemFree;
     use winapi::um::knownfolders::FOLDERID_LocalAppData;
     use winapi::um::shlobj::{SHGetKnownFolderPath, KF_FLAG_CREATE};
-    use winapi::shared::ntdef::LPWSTR;
-    use winapi::shared::minwindef::LPVOID;
 
     let app_data = unsafe {
         let mut res: LPWSTR = std::ptr::null_mut();

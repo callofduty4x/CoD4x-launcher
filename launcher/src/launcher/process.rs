@@ -55,7 +55,7 @@ struct RestartProcessError {
 impl RestartProcessError {
     fn new(msg: String) -> Self {
         Self {
-            message: format!("Failed to restart process: {}", msg),
+            message: format!("Failed to restart process: {msg}"),
         }
     }
 }

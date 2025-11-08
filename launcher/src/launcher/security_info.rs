@@ -76,8 +76,8 @@ pub enum SecurityDescriptorError {
 impl SecurityDescriptorError {
     fn message(&self) -> String {
         match self {
-            Self::GetError(code) => format!("Failed to get security descriptor: {}", code),
-            Self::SetError(code) => format!("Failed to set security descriptor: {}", code),
+            Self::GetError(code) => format!("Failed to get security descriptor: {code}"),
+            Self::SetError(code) => format!("Failed to set security descriptor: {code}"),
         }
     }
 }

@@ -47,7 +47,7 @@ impl From<Wstring> for *mut u16 {
 //         write!(f, "unimplemented")
 //     }
 // }
-// 
+//
 // impl Debug for Wstring {
 //     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
 //         //write!(f, "{}", self.str)

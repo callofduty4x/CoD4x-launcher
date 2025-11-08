@@ -6,7 +6,7 @@ use super::sha1;
 use super::zip;
 use crate::launcher::updater::github;
 use core::ffi::{c_char, c_void, CStr};
-use libloading::{Library, Symbol};
+use libloading::Library;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 
@@ -28,27 +28,20 @@ pub fn load_module(
     };
 
     unsafe {
-        let lib = match Library::new(full_miles32path) {
-            Ok(lib) => lib,
-            Err(_) => return Err(Miles32LoadError::ModuleNotFound),
+        let Ok(lib) = Library::new(full_miles32path) else {
+            return Err(Miles32LoadError::ModuleNotFound);
         };
 
         for (i, name) in names.iter().enumerate() {
-            let element_ptr = mss32importprocs.add(i);
-            let proc: Result<Symbol<*mut c_void>, _> = lib.get(name);
-
-            let proc = match proc {
-                Ok(proc) => proc.try_as_raw_ptr(),
-                Err(_) => None,
-            };
-
-            if let Some(proc) = proc {
-                *element_ptr = proc;
-            } else {
-                return Err(Miles32LoadError::MissingProcedure(
-                    convert_bytes_to_string(name).unwrap_or("<Error>".to_string()),
-                ));
-            }
+            *mss32importprocs.add(i) = lib
+                .get::<*mut core::ffi::c_void>(*name)
+                .ok()
+                .and_then(|p| p.try_as_raw_ptr())
+                .ok_or_else(|| {
+                    Miles32LoadError::MissingProcedure(
+                        convert_bytes_to_string(name).unwrap_or("<Error>".to_string()),
+                    )
+                })?;
         }
 
         Ok(lib)
@@ -140,7 +133,7 @@ impl Miles32LoadError {
     fn message(&self) -> String {
         match self {
             Self::ModuleNotFound => "Miles32 DLL not found".to_string(),
-            Self::MissingProcedure(name) => format!("Missing Miles32 procedure '{}'", name),
+            Self::MissingProcedure(name) => format!("Missing Miles32 procedure '{name}'"),
         }
     }
 }

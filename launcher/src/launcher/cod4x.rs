@@ -1,6 +1,6 @@
 use super::filesystem as fs;
 use core::ffi::{c_char, CStr};
-use libloading::{Library, Symbol};
+use libloading::Library;
 use semver::Version;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
@@ -13,7 +13,7 @@ pub fn run(hinstance: HINSTANCE, version: Option<&String>) -> anyhow::Result<()>
         let module = load_module(version)?;
 
         type TWinMain = unsafe extern "stdcall" fn(HINSTANCE, HINSTANCE, LPSTR, i32) -> i32;
-        let win_main: Result<Symbol<TWinMain>, _> = module.get(b"WinMain@16\0");
+        let win_main = module.get::<TWinMain>(b"WinMain@16\0");
         if let Ok(win_main) = win_main {
             std::process::exit(win_main(
                 hinstance,
@@ -31,7 +31,7 @@ pub fn get_module_version() -> anyhow::Result<Version> {
     unsafe {
         let module = load_module(None)?;
         type TGetCoD4xVersion = unsafe extern "C" fn() -> *const c_char;
-        let get_cod4x_version: Symbol<TGetCoD4xVersion> = module.get(b"GetCoD4xVersion\0")?;
+        let get_cod4x_version = module.get::<TGetCoD4xVersion>(b"GetCoD4xVersion\0")?;
 
         let mut version_str = CStr::from_ptr(get_cod4x_version()).to_str()?.to_string();
         if version_str.matches('.').count() < 2 {
@@ -46,7 +46,7 @@ fn load_module(version: Option<&String>) -> anyhow::Result<libloading::Library> 
     let cod4x_bin_dir = fs::appdata_bin_path()?;
 
     let version_dir: Option<std::path::PathBuf> = match version {
-        Some(version) => Some(cod4x_bin_dir.join(format!("cod4x_{}", version))),
+        Some(version) => Some(cod4x_bin_dir.join(format!("cod4x_{version}"))),
         None => {
             let cod4x_dirs = cod4x_bin_dir.join("cod4x_*\\");
             let cod4x_dirs = cod4x_dirs.to_str().ok_or(CoD4xLoadError::ModuleNotFound)?;
@@ -70,9 +70,7 @@ fn load_module(version: Option<&String>) -> anyhow::Result<libloading::Library> 
         .ok_or(CoD4xLoadError::ModuleNotFound)?;
 
     fs::set_dll_directory(&version_dir);
-    unsafe {
-        Ok(Library::new(fullpath)?)
-    }
+    unsafe { Ok(Library::new(fullpath)?) }
 }
 
 enum CoD4xLoadError {

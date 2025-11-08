@@ -58,10 +58,9 @@ impl LauncherComponent {
                 None => return Err(LauncherAssetError::NotFound.into()),
             };
 
-        match artifact.artifact_name.as_str() {
-            "launcher.dll" => self.update_launcher(asset, hashes, progress_callback)?,
-            _ => {}
-        };
+        if artifact.artifact_name.as_str() == "launcher.dll" {
+            self.update_launcher(asset, hashes, progress_callback)?;
+        }
 
         Ok(())
     }
