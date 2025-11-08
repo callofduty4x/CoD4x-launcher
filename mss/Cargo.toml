@@ -25,6 +25,9 @@ features = [
     "combaseapi",
 ]
 
+[build-dependencies]
+nasm-rs = "0.3.1"
+
 [lib]
 crate-type = ["cdylib"]
 

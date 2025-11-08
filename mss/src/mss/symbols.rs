@@ -342,3 +342,11 @@ pub const MSS32_SYMBOLS: [&core::ffi::CStr; MSS_SYMBOL_COUNT] = [
 	c"_RIB_set_provider_system_data@12",
 	c"_RIB_set_provider_user_data@12"
 ];
+
+#[no_mangle]
+pub static mut MSS32_PROCS: [*mut core::ffi::c_void; MSS_SYMBOL_COUNT] = [core::ptr::null_mut(); MSS_SYMBOL_COUNT];
+
+// Explicitly export at least one function, otherwise none of the symbols are exported.
+#[export_name = "AIL_debug_printf"]
+#[allow(non_snake_case)]
+extern "system" fn AIL_debug_printf() {}
