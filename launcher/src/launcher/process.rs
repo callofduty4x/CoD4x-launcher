@@ -40,12 +40,11 @@ pub fn restart(privileges: Privileges, params: Option<&str>) -> anyhow::Result<(
         return Err(RestartProcessError::new(error::get_error_string()).into());
     }
 
-    if sei.hProcess.is_null() {
-        std::process::exit(0);
+    if !sei.hProcess.is_null() {
+        unsafe { AllowSetForegroundWindow(GetProcessId(sei.hProcess)) };
     }
-    unsafe { AllowSetForegroundWindow(GetProcessId(sei.hProcess)) };
 
-    Ok(())
+    std::process::exit(0);
 }
 
 struct RestartProcessError {

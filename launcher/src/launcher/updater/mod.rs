@@ -8,7 +8,6 @@ pub mod updater_app;
 use crate::launcher::{msg_box, process};
 use component::{Component, ComponentUpdates, Update};
 use std::sync::Arc;
-use winapi::um::processthreadsapi::ExitThread;
 
 fn get_updates() -> Vec<(Vec<Update>, Box<dyn Component>)> {
     let mut components: Vec<Box<dyn Component>> = Vec::new();
@@ -108,7 +107,6 @@ pub fn run_updater(is_elevated: bool) -> anyhow::Result<()> {
 
     if needs_elevation {
         process::restart(process::Privileges::Admin, Some("+set elevated 1"))?;
-        unsafe { ExitThread(0) };
         return Ok(());
     }
 
@@ -123,8 +121,7 @@ pub fn run_updater(is_elevated: bool) -> anyhow::Result<()> {
 
     if is_elevated {
         msg_box::message_box("Update installed, restart the game now.", "CoD4x Updater");
-        unsafe { ExitThread(0) };
-        return Ok(());
+        std::process::exit(0);
     }
 
     if needs_restart {
@@ -133,7 +130,6 @@ pub fn run_updater(is_elevated: bool) -> anyhow::Result<()> {
             "CoD4x Updater",
         );
         process::restart(process::Privileges::User, None)?;
-        unsafe { ExitThread(0) };
     }
 
     Ok(())
