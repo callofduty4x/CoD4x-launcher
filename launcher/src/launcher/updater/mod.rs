@@ -3,6 +3,7 @@ mod component;
 pub mod github;
 mod gui;
 mod launcher;
+mod mss32;
 pub mod updater_app;
 use crate::launcher::{msg_box, process};
 use component::{Component, ComponentUpdates, Update};
@@ -23,6 +24,13 @@ fn get_updates() -> Vec<(Vec<Update>, Box<dyn Component>)> {
         Ok(component) => components.push(Box::new(component)),
         Err(e) => msg_box::message_box(
             format!("Error updating launcher:\n{e}").as_str(),
+            "CoD4x Updater",
+        ),
+    }
+    match mss32::Mss32Component::new() {
+        Ok(component) => components.push(Box::new(component)),
+        Err(e) => msg_box::message_box(
+            format!("Error updating Miles Loader:\n{e}").as_str(),
             "CoD4x Updater",
         ),
     }
@@ -94,7 +102,7 @@ pub fn run_updater(is_elevated: bool) -> anyhow::Result<()> {
         icons: nwg::MessageIcons::Question,
     };
 
-    if nwg::message(&params) != nwg::MessageChoice::Yes {
+    if !is_elevated && nwg::message(&params) != nwg::MessageChoice::Yes {
         return Ok(());
     }
 

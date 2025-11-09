@@ -1,5 +1,5 @@
 [workspace]
-members = ["launcher", "mss"]
+members = ["launcher"]
 resolver = "2"
 
 [profile.dev]

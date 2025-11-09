@@ -4,14 +4,12 @@
 </p>
 
 Launcher for the [CoD4x client](https://github.com/callofduty4x/CoD4x_Client_pub), packing an automatic updater.  
-The repository also contains the mss32 stub responsible for loading this launcher.
 
 # Build:
 
 ## Build prerequisites:
  - [Cargo](https://doc.rust-lang.org/cargo/)
  - [MinGW](http://www.mingw.org/)
- - [NASM](http://www.nasm.us/)
 
 Make sure you've got the necessary binaries in the system `$PATH` environment variable. [Click here to learn more.](https://superuser.com/questions/284342/what-are-path-and-other-environment-variables-and-how-can-i-set-or-use-them)
 

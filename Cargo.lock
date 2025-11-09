@@ -291,7 +291,7 @@ dependencies = [
 
 [[package]]
 name = "launcher"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "cod4v17_patch",
@@ -386,23 +386,6 @@ checksum = "1fa76a2c86f704bdb222d66965fb3d63269ce38518b83cb0575fca855ebb6316"
 dependencies = [
  "adler2",
  "simd-adler32",
-]
-
-[[package]]
-name = "mss32"
-version = "1.0.0"
-dependencies = [
- "nasm-rs",
- "winapi 0.3.9",
-]
-
-[[package]]
-name = "nasm-rs"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34f676553b60ccbb76f41f9ae8f2428dac3f259ff8f1c2468a174778d06a1af9"
-dependencies = [
- "log",
 ]
 
 [[package]]

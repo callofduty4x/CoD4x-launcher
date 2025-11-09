@@ -33,34 +33,21 @@ impl CoD4xComponent {
             upstream_tag.push_str(".0");
         }
 
-        let upstream_version = Version::parse(upstream_tag.as_str());
+        let upstream = Version::parse(upstream_tag.as_str())?;
+        let current = cod4x_module::get_module_version().ok();
 
-        match cod4x_module::get_module_version() {
-            // If we can't get the current version, always update
-            Err(_) => Ok(Some(Update {
+        let needs_update = current.as_ref().is_none_or(|c| upstream > *c);
+        if needs_update {
+            Ok(Some(Update {
                 display_name: display_name.to_string(),
                 artifact_name: pattern.to_string(),
-                current: None,
-                upstream: upstream_version.unwrap_or(Version::new(0, 0, 0)),
+                current,
+                upstream,
                 requires_elevate: false,
                 requires_restart: false,
-            })),
-            // We got a valid current version, compare with upstream
-            Ok(current) => {
-                let upstream = upstream_version?;
-                if upstream > current {
-                    Ok(Some(Update {
-                        display_name: display_name.to_string(),
-                        artifact_name: pattern.to_string(),
-                        current: Some(current),
-                        upstream,
-                        requires_elevate: false,
-                        requires_restart: false,
-                    }))
-                } else {
-                    Ok(None)
-                }
-            }
+            }))
+        } else {
+            Ok(None)
         }
     }
 
