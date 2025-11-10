@@ -1,5 +1,4 @@
 use super::component::{Component, Update};
-use crate::launcher::filesystem as fs;
 use crate::launcher::http;
 use crate::launcher::module;
 use crate::launcher::sha1;
@@ -103,9 +102,10 @@ impl Mss32Component {
             .get(&asset.name.as_str())
             .ok_or(Mss32AssetError::HashNotFound)?;
 
-        let savepath = fs::appdata_bin_path()?;
-        std::fs::create_dir_all(&savepath)?;
-        let download_path = savepath.join(&asset.name).with_extension("part");
+        let module_path = module::get_path();
+        let install_dir = module_path.parent().ok_or(Mss32AssetError::WriteFailure)?;
+
+        let download_path = install_dir.join(&asset.name).with_extension("part");
 
         http::download_file(
             asset.url.as_str(),
@@ -119,14 +119,13 @@ impl Mss32Component {
             return Err(Mss32AssetError::IntegrityFailure.into());
         }
 
-        let module_path = module::get_path();
-        let install_dir = module_path.parent().ok_or(Mss32AssetError::WriteFailure)?;
-
         let mss_path = install_dir.join(asset.name.as_str());
         let old_mss_path = mss_path.with_extension("old");
         std::fs::remove_file(&old_mss_path).ok();
         std::fs::rename(&mss_path, &old_mss_path)?;
-        std::fs::rename(download_path, &mss_path)?;
+        std::fs::rename(download_path, &mss_path).inspect_err(|_e| {
+            std::fs::rename(&old_mss_path, &mss_path).ok();
+        })?;
         Ok(())
     }
 }
