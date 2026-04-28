@@ -89,12 +89,6 @@ impl CoD4xComponent {
             "jcod4x_00.iwd" => {
                 self.update_mod_asset(fs::appdata_main_path()?, asset, hashes, progress_callback)?
             }
-            "cod4x_ambfix.ff" => {
-                self.update_mod_asset(fs::appdata_zone_path()?, asset, hashes, progress_callback)?
-            }
-            "cod4x_patch.ff" => {
-                self.update_mod_asset(fs::appdata_zone_path()?, asset, hashes, progress_callback)?
-            }
             "cod4x_patchv2.ff" => {
                 self.update_mod_asset(fs::appdata_zone_path()?, asset, hashes, progress_callback)?
             }
@@ -180,8 +174,6 @@ impl Component for CoD4xComponent {
         let updates = [
             self.get_module_update("^cod4x_([0-9]+).dll", "CoD4x DLL")?,
             self.get_cod4x_mod_update(fs::appdata_main_path()?, "jcod4x_00.iwd", "jcod4x")?,
-            self.get_cod4x_mod_update(fs::appdata_zone_path()?, "cod4x_ambfix.ff", "ambfix")?,
-            self.get_cod4x_mod_update(fs::appdata_zone_path()?, "cod4x_patch.ff", "patch")?,
             self.get_cod4x_mod_update(fs::appdata_zone_path()?, "cod4x_patchv2.ff", "patch v2")?,
         ]
         .into_iter()
